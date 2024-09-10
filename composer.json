@@ -11,8 +11,8 @@
         "simple rp menu"
     ],
     "support": {
-        "docs": "https://github.com/bedh-rp/simplerpmenu/blob/master/README.md",
-        "issues": "https://github.com/bedh-rp/simplerpmenu/issues"
+        "docs": "https://github.com/rpqa99/craft5-simple-menu/blob/master/README.md",
+        "issues": "https://github.com/rpqa99/craft5-simple-menu/issues"
     },
     "license": "MIT",
     "authors": [
@@ -34,8 +34,8 @@
         "handle": "simple-rp-menu",
         "developer": "Bedh Prakash",
         "developerUrl": "https://github.com/bedh-rp",
-        "documentationUrl": "https://github.com/bedh-rp/simplerpmenu/blob/master/README.md",
-        "changelogUrl": "https://github.com/bedh-rp/simplerpmenu/blob/master/CHANGELOG.md",
+        "documentationUrl": "https://github.com/rpqa99/craft5-simple-menu/blob/master/README.md",
+        "changelogUrl": "https://github.com/rpqa99/craft5-simple-menu/blob/master/CHANGELOG.md",
         "components": {
             "simpleRpMenuService": "remoteprogrammer\\simplerpmenu\\services\\SimpleRpMenuService",
             "simpleRpMenuItemsService": "remoteprogrammer\\simplerpmenu\\services\\SimpleRpMenuItemsService"

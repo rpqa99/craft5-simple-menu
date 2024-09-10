@@ -1,12 +1,12 @@
-# Simple RP Menu plugin for Craft CMS 3.x
+# Simple RP Menu plugin for Craft CMS 5.x
 
-This is a simple menu to add Singles, Structures, Channels, Categories, Custom menus (with description), etc to your name menu for CRAFT CMS V3.x
+This is a simple menu to add Singles, Structures, Channels, Categories, Custom menus (with description), etc to your name menu for CRAFT CMS V5.x
 
 ![Screenshot](resources/img/plugin-logo.png)
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 5.0.0-beta.23 or later.
 
 ## Installation
 
@@ -24,7 +24,7 @@ To install the plugin, follow these instructions.
 
 ## Simple RP Menu Overview
 
-This is a simple menu to add Singles, Structures, Channels, Categories, Custom menus (with description), etc to your name menu for CRAFT CMS V3.x
+This is a simple menu to add Singles, Structures, Channels, Categories, Custom menus (with description), etc to your name menu for CRAFT CMS V5.x
 
 ## Configuring Simple RP Menu
 
