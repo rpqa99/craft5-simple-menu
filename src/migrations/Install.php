@@ -230,10 +230,11 @@ class Install extends Migration
      */
     protected function removeTables()
     {
+        // simplerpmenu_items table
+        $this->dropTableIfExists('{{%simplerpmenu_items}}');
+        
         // simplerpmenu table
         $this->dropTableIfExists('{{%simplerpmenu}}');
 
-        // simplerpmenu_items table
-        $this->dropTableIfExists('{{%simplerpmenu_items}}');
     }
 }
