@@ -1,0 +1,78 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Simple RP Menu plugin for Craft CMS 3.x
+ *
+ * SimpleRpMenus index.twig
+ *
+ * This is a simple menu to add Singles, Structures, Channels, Categories, Custom menus (with description), etc to your name menu for CRAFT CMS V3.x
+ *
+ * @link      https://github.com/bedh-rp
+ * @copyright Copyright (c) 2022 Bedh Prakash 
+ * @author    Bedh Prakash
+ * @package   SimpleRpMenu
+ * @since     1.0.0
+ */
+#}
+
+{% extends "_layouts/cp" %}
+
+{# Link for the ? icon at the bottom of the page #}
+{% set docsUrl = "remoteprogrammer/simplerpmenu/blob/master/README.md" %}
+
+{# The title of this CP section #}
+{% set title = "All Menus" %}
+
+{% set selectedTab = 'menus' %}
+
+{% set tabs = {
+    menus:  { label: "All Menus"|t('simple-rp-menu'), url: url('simplerpmenu/' ~ objSite.handle) },
+    new:    { label: "New Menu"|t('simple-rp-menu'), url: url('simplerpmenu/menu-new/' ~ objSite.handle) }
+} %}
+
+{% set showSiteMenu = (craft.app.getIsMultiSite() ? true : false) %}
+{% set urlFormat = 'simplerpmenu/{handle}' %}
+{% set selectedSiteId = objSite.id %}
+
+{% block contextMenu %}
+    {% if showSiteMenu %}
+        {% include "_elements/sitemenu" %}
+    {% endif %}
+{% endblock %}
+
+{# The content of the CP Section#}
+{% set content %}
+    <p id="menu-none" {% if menus is not empty %} class="hidden" {% endif %}>{{ "No menus exist yet."|t('simple-rp-menu') }}</p>
+    {% if menus | length %}
+    <table id="menu-list" class="data fullwidth collapsible">
+        <thead>
+            <th scope="col">{{ "Name"|t('simple-rp-menu') }}</th>
+            <th scope="col">{{ "Handle"|t('simple-rp-menu') }}</th>
+            <td class="thin"></td>
+            <td class="thin"></td>
+        </thead>
+        <tbody>
+        {% for menu in menus %}
+            <tr data-id="{{ menu.id }}" data-name="{{ menu.name|t('simple-rp-menu') }}">
+                <th scope="row" data-title="{{ 'Name'|t('simple-rp-menu') }}"><a href="{{ url('simplerpmenu/menu-items/' ~ menu.id) }}">{{ menu.name|t('simple-rp-menu') }}</a></th>
+                <td data-title="{{ 'Handle'|t('simple-rp-menu') }}"><code>{{ menu.handle }}</code></td>
+                <td class="thin">
+                    <a class="edit icon" title="{{ 'Edit'|t('simple-rp-menu') }}" href="{{ url('simplerpmenu/menu-edit/' ~ menu.id) }}" role="button"></a>
+                </td>
+                <td class="thin">
+                    <a class="delete icon" title="{{ 'Delete'|t('simple-rp-menu') }}" role="button"></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+    <div id="menu-new" class="buttons">
+        <a href="{{ url('simplerpmenu/menu-new/' ~ objSite.handle) }}" class="btn submit add icon">{{ "New Menu"|t('simple-rp-menu') }}</a>
+    </div>
+{% endset %}
+{% js %}
+    window.csrfTokenName = "{{ craft.app.config.general.csrfTokenName|e('js') }}";
+    window.csrfTokenValue = "{{ craft.app.request.csrfToken|e('js') }}";
+	window.siteUrl = "{{ url() }}";
+{% endjs %}

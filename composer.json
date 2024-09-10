@@ -1,0 +1,45 @@
+{
+    "name": "remoteprogrammer/simple-rp-menu",
+    "description": "This is a simple menu to add Singles, Structures, Channels, Categories, Custom menus (with description), etc to your name menu for CRAFT CMS V5.x",
+    "type": "craft-plugin",
+    "version": "1.0.1",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "simple rp menu"
+    ],
+    "support": {
+        "docs": "https://github.com/bedh-rp/simplerpmenu/blob/master/README.md",
+        "issues": "https://github.com/bedh-rp/simplerpmenu/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bedh Prakash",
+            "homepage": "https://github.com/bedh-rp"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^5.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "remoteprogrammer\\simplerpmenu\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Simple RP Menu",
+        "handle": "simple-rp-menu",
+        "developer": "Bedh Prakash",
+        "developerUrl": "https://github.com/bedh-rp",
+        "documentationUrl": "https://github.com/bedh-rp/simplerpmenu/blob/master/README.md",
+        "changelogUrl": "https://github.com/bedh-rp/simplerpmenu/blob/master/CHANGELOG.md",
+        "components": {
+            "simpleRpMenuService": "remoteprogrammer\\simplerpmenu\\services\\SimpleRpMenuService",
+            "simpleRpMenuItemsService": "remoteprogrammer\\simplerpmenu\\services\\SimpleRpMenuItemsService"
+        },
+        "class": "remoteprogrammer\\simplerpmenu\\SimpleRpMenu"
+    }
+}
