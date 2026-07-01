@@ -139,6 +139,7 @@ class Install extends Migration
                     'class_parent' => $this->string(255),
                     'data_json' => $this->string(255),
                     'target' => $this->string(255),
+                    'isMegaMenu' => $this->boolean()->defaultValue(false),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),

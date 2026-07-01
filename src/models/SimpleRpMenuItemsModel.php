@@ -117,6 +117,7 @@ class SimpleRpMenuItemsModel extends Model
     
     public $noLink;
     public $customShortContent;
+    public $isMegaMenu;
 
     /**
      * Returns the validation rules for attributes.
@@ -132,7 +133,7 @@ class SimpleRpMenuItemsModel extends Model
     {
         return [
             [['id', 'menu_id', 'parent_id', 'item_order', 'entry_id'], 'integer'],
-            [['noLink', 'customShortContent'], 'safe'],
+            [['noLink', 'customShortContent', 'isMegaMenu'], 'safe'],
             [['name', 'custom_url', 'class', 'class_parent', 'data_json', 'target'], 'string'],
             [['menu_id', 'parent_id', 'item_order', 'name'], 'required'],
         ];

@@ -144,6 +144,18 @@ $(document).ready(function() {
                                         itemHTML += '</div>';
                                     itemHTML += '</div>';                                
 
+                                    itemHTML += '<div class="row field">';
+                                        itemHTML += '<div class="heading">';
+                                            itemHTML += '<label>' + Craft.t('simple-rp-menu','Is Mega Menu ?') + ':</label>';
+                                        itemHTML += '</div>';
+                                        itemHTML += '<div class="input">';
+                                            itemHTML += '<select id="isMegaMenu-' + inputCounter + '" class="text nicetext fullwidth isMegaMenu-menu" name="isMegaMenu">';
+                                                itemHTML += '<option value="0">No</option>';
+                                                itemHTML += '<option value="1">Yes</option>';
+                                            itemHTML += '</select>';
+                                        itemHTML += '</div>';
+                                    itemHTML += '</div>'; 
+
                                     // itemHTML += '<div class="row field">';
                                     //     itemHTML += '<div class="heading">';
                                     //         itemHTML += '<label>' + Craft.t('simple-rp-menu','Display Short Content ?') + ':</label>';
@@ -258,6 +270,18 @@ $(document).ready(function() {
                                         itemHTML += '</div>';
                                         itemHTML += '<div class="input">';
                                             itemHTML += '<select id="noLink-' + inputCounter + '" class="text nicetext fullwidth noLink-menu" name="noLink">';
+                                                itemHTML += '<option value="0">No</option>';
+                                                itemHTML += '<option value="1">Yes</option>';
+                                            itemHTML += '</select>';
+                                        itemHTML += '</div>';
+                                    itemHTML += '</div>';                                
+
+                                    itemHTML += '<div class="row field">';
+                                        itemHTML += '<div class="heading">';
+                                            itemHTML += '<label>' + Craft.t('simple-rp-menu','Is Mega Menu ?') + ':</label>';
+                                        itemHTML += '</div>';
+                                        itemHTML += '<div class="input">';
+                                            itemHTML += '<select id="isMegaMenu-' + inputCounter + '" class="text nicetext fullwidth isMegaMenu-menu" name="isMegaMenu">';
                                                 itemHTML += '<option value="0">No</option>';
                                                 itemHTML += '<option value="1">Yes</option>';
                                             itemHTML += '</select>';
@@ -402,7 +426,8 @@ $(document).ready(function() {
                         'class-parent' : menuItemClassParentValue,
                         'data-json' : menuItemDataValue,
                         'target' : $('#target-' + menuItem.id + ' :selected').val(),
-                        'noLink' : $('#noLink-' + menuItem.id + ' :selected').val()
+                        'noLink' : $('#noLink-' + menuItem.id + ' :selected').val(),
+                        'isMegaMenu' : $('#isMegaMenu-' + menuItem.id + ' :selected').val()
                         // 'hasShortDescp' : $('#hasShortDescp-' + menuItem.id + ' :selected').val()
                     };
 

@@ -37,32 +37,37 @@ class SimpleRpMenuService extends Component
     // Public Methods
     // =========================================================================
 
-    public function getAllMenus($siteId) {
+    public function getAllMenus($siteId)
+    {
         return SimpleRpMenuRecord::find()
-                    ->where(['site_id' => $siteId])
-                    ->all();
+            ->where(['site_id' => $siteId])
+            ->all();
     }
 
-    public function getMenuById($id) {
+    public function getMenuById($id)
+    {
         $record = SimpleRpMenuRecord::findOne([
             'id' => $id
         ]);
         return new SimpleRpMenuModel($record->getAttributes());
     }
 
-    public function getMenuByHandle($handle) {
+    public function getMenuByHandle($handle)
+    {
         return SimpleRpMenuRecord::findOne([
             'handle' => $handle
         ]);
     }
 
-    public function getMenuByName($name) {
+    public function getMenuByName($name)
+    {
         return SimpleRpMenuRecord::findOne([
             'name' => $name
         ]);
     }
 
-    public function deleteMenuById($id) {
+    public function deleteMenuById($id)
+    {
         $record = SimpleRpMenuRecord::findOne([
             'id' => $id
         ]);
@@ -71,14 +76,16 @@ class SimpleRpMenuService extends Component
             SimpleRpMenu::$plugin->simplerpmenuItems->deleteItemsByMenuId($record);
             if ($record->delete()) {
                 return 1;
-            };
+            }
+            ;
         }
     }
 
-    public function saveMenu(SimpleRpMenuModel $model) {
+    public function saveMenu(SimpleRpMenuModel $model)
+    {
         $record = false;
         if (isset($model->id)) {
-            $record = SimpleRpMenuRecord::findOne( [
+            $record = SimpleRpMenuRecord::findOne([
                 'id' => $model->id
             ]);
         }
@@ -93,7 +100,7 @@ class SimpleRpMenuService extends Component
 
         $save = $record->save();
         if (!$save) {
-            Craft::getLogger()->log( $record->getErrors(), LOG_ERR, 'simple-rp-menu' );
+            Craft::getLogger()->log($record->getErrors(), LOG_ERR, 'simple-rp-menu');
         }
         return $save;
     }
@@ -108,7 +115,8 @@ class SimpleRpMenuService extends Component
      *
      * @return mixed
      */
-    public function getMenuHTML($handle = false, $config ) {
+    public function getMenuHTML($handle = false, $config)
+    {
         if ($handle === false || ($menu = $this->getMenuByHandle($handle)) === null) {
             echo '<p>' . Craft::t('simple-rp-menu', 'A menu with this handle does not exist!') . '</p>';
             return;
@@ -122,7 +130,7 @@ class SimpleRpMenuService extends Component
 
         if (!empty($config)) {
             if (isset($config['menu-id'])) {
-                $menu_id = ' id="' .$config['menu-id']. '"';
+                $menu_id = ' id="' . $config['menu-id'] . '"';
             }
             if (isset($config['menu-class'])) {
                 $menu_class .= ' ' . $config['menu-class'];
@@ -156,7 +164,8 @@ class SimpleRpMenuService extends Component
         echo $localHTML;
     }
 
-    private function getMenuItemHTML($menu_item, $config) {
+    private function getMenuItemHTML($menu_item, $config, &$isActive = false)
+    {
         $menu_item_url = '';
         $ul_class = '';
         $menu_item_class = 'menu-item';
@@ -168,7 +177,7 @@ class SimpleRpMenuService extends Component
         $data_json = $menu_item['data_json'];
 
         $menu_class = $class;
-        $menu_item_class = $menu_item_class . ' ' .$class_parent;
+        $menu_item_class = $menu_item_class . ' ' . $class_parent;
 
         if (!empty($config)) {
             if (isset($config['li-class'])) {
@@ -187,13 +196,15 @@ class SimpleRpMenuService extends Component
                 ->id($menu_item['entry_id'])
                 ->one();
 
-            if (!empty($entry) ) $menu_item_url = $entry->url;
+            if (!empty($entry))
+                $menu_item_url = $entry->url;
             else {
                 $entry = Category::find()
-                ->id($menu_item['entry_id'])
-                ->one();
+                    ->id($menu_item['entry_id'])
+                    ->one();
 
-                if (!empty($entry) ) $menu_item_url = $entry->url;
+                if (!empty($entry))
+                    $menu_item_url = $entry->url;
             }
         }
 
@@ -202,7 +213,7 @@ class SimpleRpMenuService extends Component
             $data_json = explode(PHP_EOL, $data_json);
             foreach ($data_json as $data_item) {
                 $data_item = explode(':', $data_item);
-                $data_attributes .= trim($data_item[0]) . '="' .trim($data_item[1]). '"';
+                $data_attributes .= trim($data_item[0]) . '="' . trim($data_item[1]) . '"';
             }
 
         }
@@ -211,13 +222,13 @@ class SimpleRpMenuService extends Component
         $target = $menu_item['target'];
         $noLink = $menu_item['noLink'];
         $customShortContent = $menu_item['customShortContent'];
-        if($noLink){
+        if ($noLink) {
             $menu_item_url = '';
-            $menu_class .= ' nav-link';
+            $menu_class .= ' menu-link';
         }
 
         $menuItemName = Craft::t('simple-rp-menu', $menu_item['name']);
-        if($customShortContent){
+        if ($customShortContent) {
             $menuItemName = $customShortContent;
         }
 
@@ -225,58 +236,73 @@ class SimpleRpMenuService extends Component
         if ($current_active_url != '' && $menu_item_url != '') {
             $menu_item_url_filtered = preg_replace('#^https?://#', '', $menu_item_url);
             $current_active_url = preg_replace('/\?.*/', '', $current_active_url); // Remove query string
-            if ( $current_active_url == $menu_item_url_filtered ) {
+            if ($current_active_url == $menu_item_url_filtered) {
                 $menu_class .= ' active';
                 $menu_item_class .= ' current-menu-item';
+                $isActive = true;
             }
         }
-        $menu_item_class .= isset($menu_item['children'])?' dropdown':'';
-        $localHTML = '';
-        $localHTML .= '<li id="menu-item-' .$menu_item['id']. '" class="' .$menu_item_class. '">';
-
-        if ($menu_item_url) {
-            $localHTML .= '<a class="nav-link '. $menu_class. '" target="'. $target .'" href="' .$menu_item_url. '"' .$data_attributes. '>' . $menuItemName . '</a>';
-        } else {
-            $localHTML .= '<span class="'. $menu_class. '"' .$data_attributes. '>' . $menuItemName . '</span>';
-        }
-        if(isset($menu_item['children'])){
-            $localHTML .='<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><span class="ddarow"></span></a>';
-        }
-
-        // if($hasShortDescp){
-        //     $localHTML .='<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-        //     <span class="ddarow"></span>
-        // </a><div class="dropdown-menu dropdown-lst-label">
-        //                     <ul class=" container mega-menu px-0 px-lg-_5 px-xl-1_5">
-        //                         <li class="nav-item">
-        //                             <span data-bs-auto-close="outside" data-bs-toggle="dropdown" class="nav-link">'.$menu_item['name'].'</span>
-        //                         </li>
-        //                     </ul>
-        //                 </div>';
-        // }
+        $menu_item_class .= isset($menu_item['children']) ? ' dropdown' : '';
         
+        $isMegaMenu = isset($menu_item['isMegaMenu']) && $menu_item['isMegaMenu'] == '1';
+        if ($isMegaMenu && isset($menu_item['children'])) {
+            $menu_item_class .= ' has-mega-menu';
+        }
 
+        // Process children FIRST to know if any child is active
+        $childrenHTML = '';
+        $childIsActive = false;
         if (isset($menu_item['children'])) {
-
             if (isset($config['sub-menu-ul-class'])) {
                 $ul_class = $config['sub-menu-ul-class'];
             }
+            if ($isMegaMenu) {
+                $ul_class .= ' mega-menu';
+            }
 
-            $localHTML .= '<div class="dropdown-menu dropdown-lst-label">';
-                $localHTML .= '<ul class="'.$ul_class.'">';
-                    foreach ( $menu_item['children'] as $child )
-                    {
-                    $localHTML .= $this->getMenuItemHTML($child, $config);
-                    }
-                $localHTML .= '</ul>';
+            $childrenHTML .= '<div class="dropdown-menu dropdown-lst-label">';
+            $childrenHTML .= '<ul class="' . $ul_class . '">';
+            foreach ($menu_item['children'] as $child) {
+                $thisChildActive = false;
+                $childrenHTML .= $this->getMenuItemHTML($child, $config, $thisChildActive);
+                if ($thisChildActive) {
+                    $childIsActive = true;
+                }
+            }
+            $childrenHTML .= '</ul></div>';
+        }
+
+        if ($childIsActive) {
+            $menu_class .= ' active current-menu-ancestor';
+            $menu_item_class .= ' current-menu-ancestor';
+            $isActive = true;
+        }
+
+        $localHTML = '';
+        $localHTML .= '<li id="menu-item-' . $menu_item['id'] . '" class="' . $menu_item_class . '">';
+
+        if (isset($menu_item['children'])) {
+            $localHTML .= '<div class="menu-group">';
+        }
+
+        if ($menu_item_url) {
+            $localHTML .= '<a class="menu-link ' . $menu_class . '" target="' . $target . '" href="' . $menu_item_url . '"' . $data_attributes . '>' . $menuItemName . '</a>';
+        } else {
+            $localHTML .= '<span class=" ' . $menu_class . '"' . $data_attributes . '>' . $menuItemName . '</span>';
+        }
+        if (isset($menu_item['children'])) {
+            $localHTML .= '<a class="dropdown-toggle" data-menu-toggle="dropdown"><span class="ddarow"></span></a>';
             $localHTML .= '</div>';
         }
+
+        $localHTML .= $childrenHTML;
         $localHTML .= '</li>';
 
         return $localHTML;
     }
 
-    private function replaceEnvironmentVariables($str) {
+    private function replaceEnvironmentVariables($str)
+    {
         $environmentVariables = Craft::$app->config->general->aliases;
         if (is_array($environmentVariables)) {
             $tmp = [];

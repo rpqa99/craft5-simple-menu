@@ -84,6 +84,7 @@ class SimpleRpMenuItemsService extends Component
         $record->target = $model->target;
         $record->noLink = $model->noLink;
         $record->customShortContent = $model->customShortContent;
+        $record->isMegaMenu = $model->isMegaMenu;
 
         $save = $record->save();
         if ( !$save ) {
@@ -137,6 +138,7 @@ class SimpleRpMenuItemsService extends Component
             $arrMenuItems[$intKey]['target'] = $objItem->target;
             $arrMenuItems[$intKey]['noLink'] = $objItem->noLink;
             $arrMenuItems[$intKey]['customShortContent'] = $objItem->customShortContent;
+            $arrMenuItems[$intKey]['isMegaMenu'] = $objItem->isMegaMenu;
         }
 
         if ($arrMenuItems) {
@@ -276,6 +278,18 @@ class SimpleRpMenuItemsService extends Component
                                 $localHTML .= '<select id="noLink-'.$menuItem['id'].'" class="text nicetext fullwidth noLink-menu" name="noLink">';
                                     $localHTML .= '<option value="0" '.(($menuItem['noLink']=='0') ? 'selected' : '') .' >No</option>';
                                     $localHTML .= '<option value="1" '.(($menuItem['noLink']=='1') ? 'selected' : '') .'>Yes</option>';
+                                $localHTML .= '</select>';
+                            $localHTML .= '</div>';
+                        $localHTML .= '</div>';
+
+                        $localHTML .= '<div class="row field">';
+                            $localHTML .= '<div class="heading">';
+                                $localHTML .= '<label>' . Craft::t('simple-rp-menu', 'Is Mega Menu ?') . ':</label>';
+                            $localHTML .= '</div>';
+                            $localHTML .= '<div class="input">';
+                                $localHTML .= '<select id="isMegaMenu-'.$menuItem['id'].'" class="text nicetext fullwidth isMegaMenu-menu" name="isMegaMenu">';
+                                    $localHTML .= '<option value="0" '.((isset($menuItem['isMegaMenu']) && $menuItem['isMegaMenu']=='0') ? 'selected' : '') .' >No</option>';
+                                    $localHTML .= '<option value="1" '.((isset($menuItem['isMegaMenu']) && $menuItem['isMegaMenu']=='1') ? 'selected' : '') .'>Yes</option>';
                                 $localHTML .= '</select>';
                             $localHTML .= '</div>';
                         $localHTML .= '</div>';
