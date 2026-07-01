@@ -61,4 +61,30 @@ This is a simple menu to add Singles, Structures, Channels, Categories, Custom m
         
         {{ craft.simplerpmenu.getRpMenuHTML('HandleName',{ 'menu-id': 'headerMenu','menu-class':'menuGroup','ul-class':'navbar-nav justify-content-end','li-class':'nav-item','sub-menu-ul-class':'container mega-menu px-0 px-lg-_5 px-xl-1_5' }) }}
 
+### Custom Field Type (Menu Selector)
+
+This plugin includes a **Simple RP Menu Selector** field type that you can add to any Field Layout in Craft CMS.
+
+1. Go to **Settings → Fields** and create a new field.
+2. Select **Simple RP Menu Selector** as the field type.
+3. Add this field to your Entry, Global, or Category field layout.
+4. Content editors will now see an automatically populated dropdown of all available menus created by this plugin.
+
+In your Twig templates, you can access the selected menu dynamically:
+```twig
+{{ craft.simplerpmenu.getRpMenuHTML(entry.myMenuFieldHandle.value) }}
+```
+
+### Fetching Menu Data Dynamically
+
+You can now fetch the full menu object by its handle to get access to its properties (like its `name` for dynamic headings):
+
+```twig
+{% set menuObj = craft.simplerpmenu.getMenu('HandleName') %}
+{% if menuObj %}
+    <h3>{{ menuObj.name }}</h3>
+    {{ craft.simplerpmenu.getRpMenuHTML('HandleName') }}
+{% endif %}
+```
+
 Brought to you by [Bedh Prakash](https://github.com/bedh-rp)

@@ -55,4 +55,18 @@ class SimpleRpMenuVariable
             return SimpleRpMenu::$plugin->simplerpmenu->getMenuHTML($handle, $config);
         }
     }
+
+    /**
+     * Get a menu by handle
+     *
+     * @param string $handle
+     * @return \remoteprogrammer\simplerpmenu\records\SimpleRpMenuRecord|null
+     */
+    public function getMenu($handle)
+    {
+        if ($handle != '') {
+            return SimpleRpMenu::$plugin->simplerpmenu->getMenuByHandle($handle);
+        }
+        return null;
+    }
 }

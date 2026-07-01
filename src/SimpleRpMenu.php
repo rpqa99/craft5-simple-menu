@@ -23,6 +23,9 @@ use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\web\twig\variables\Cp;
+use craft\services\Fields;
+use craft\events\RegisterComponentTypesEvent;
+use remoteprogrammer\simplerpmenu\fields\RpMenuField;
 
 use yii\base\Event;
 
@@ -107,6 +110,14 @@ class SimpleRpMenu extends Plugin
                     'label' => 'Simple RP Menus',
                     'icon' => '@remoteprogrammer/simplerpmenu/icon.svg'
                 ];
+            }
+        );
+
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = RpMenuField::class;
             }
         );
 
