@@ -148,7 +148,7 @@ class SimpleRpMenuService extends Component
 
         $localHTML = '';
 
-        $menu_items = SimpleRpMenu::$plugin->simplerpmenuItems->getMenuItems($menu->id);
+        $menu_items = SimpleRpMenu::$plugin->simplerpmenuItems->getResolvedMenuItems($menu->id);
         foreach ($menu_items as $menu_item) {
             $localHTML .= $this->getMenuItemHTML($menu_item, $config);
         }
@@ -227,9 +227,9 @@ class SimpleRpMenuService extends Component
             $menu_class .= ' menu-link';
         }
 
-        $menuItemName = Craft::t('simple-rp-menu', $menu_item['name']);
+        $menuItemName = '<span class="menu-title">' . Craft::t('simple-rp-menu', $menu_item['name']) . '</span>';
         if ($customShortContent) {
-            $menuItemName = $customShortContent;
+            $menuItemName .= '<span class="menu-short-content">' . $customShortContent . '</span>';
         }
 
         $current_active_url = Craft::$app->request->getServerName() . Craft::$app->request->getUrl();
@@ -242,17 +242,19 @@ class SimpleRpMenuService extends Component
                 $isActive = true;
             }
         }
-        $menu_item_class .= isset($menu_item['children']) ? ' dropdown' : '';
-        
+        $hasChildren = isset($menu_item['children']) && is_array($menu_item['children']) && count($menu_item['children']) > 0;
+
+        $menu_item_class .= $hasChildren ? ' dropdown' : '';
+
         $isMegaMenu = isset($menu_item['isMegaMenu']) && $menu_item['isMegaMenu'] == '1';
-        if ($isMegaMenu && isset($menu_item['children'])) {
+        if ($isMegaMenu && $hasChildren) {
             $menu_item_class .= ' has-mega-menu';
         }
 
         // Process children FIRST to know if any child is active
         $childrenHTML = '';
         $childIsActive = false;
-        if (isset($menu_item['children'])) {
+        if ($hasChildren) {
             if (isset($config['sub-menu-ul-class'])) {
                 $ul_class = $config['sub-menu-ul-class'];
             }
@@ -281,7 +283,7 @@ class SimpleRpMenuService extends Component
         $localHTML = '';
         $localHTML .= '<li id="menu-item-' . $menu_item['id'] . '" class="' . $menu_item_class . '">';
 
-        if (isset($menu_item['children'])) {
+        if ($hasChildren) {
             $localHTML .= '<div class="menu-group">';
         }
 
@@ -290,7 +292,7 @@ class SimpleRpMenuService extends Component
         } else {
             $localHTML .= '<span class=" ' . $menu_class . '"' . $data_attributes . '>' . $menuItemName . '</span>';
         }
-        if (isset($menu_item['children'])) {
+        if ($hasChildren) {
             $localHTML .= '<a class="dropdown-toggle" data-menu-toggle="dropdown"><span class="ddarow"></span></a>';
             $localHTML .= '</div>';
         }

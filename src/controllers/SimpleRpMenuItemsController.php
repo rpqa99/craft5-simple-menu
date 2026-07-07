@@ -128,6 +128,11 @@ class SimpleRpMenuItemsController extends Controller
                 $arrData['noLink']= (isset($menuItem['noLink']) ? $menuItem['noLink'] : '');
                 $arrData['customShortContent']= (isset($menuItem['custom-short-content']) ? $menuItem['custom-short-content'] : '');
                 $arrData['isMegaMenu']= (isset($menuItem['isMegaMenu']) ? $menuItem['isMegaMenu'] : false);
+                $arrData['dropdownType']= (isset($menuItem['dropdown-type']) ? $menuItem['dropdown-type'] : 'static');
+                $arrData['dynamicSource']= (isset($menuItem['dynamic-source']) ? $menuItem['dynamic-source'] : '');
+                $arrData['dynamicSourceId']= (isset($menuItem['dynamic-source-id']) ? $menuItem['dynamic-source-id'] : null);
+                $arrData['maxLevel']= (isset($menuItem['max-level']) ? $menuItem['max-level'] : 1);
+                $arrData['dynamicSettings']= (isset($menuItem['dynamic-settings']) ? $menuItem['dynamic-settings'] : null);
 
                 $menuItemModel->setAttributes($arrData);
 
@@ -147,6 +152,10 @@ class SimpleRpMenuItemsController extends Controller
                 }
             }
         }
+        
+        // Invalidate menu cache
+        \yii\caching\TagDependency::invalidate(\Craft::$app->cache, ['simple-rp-menu']);
+        
         Craft::$app->getSession()->setNotice(Craft::t('simple-rp-menu', 'Menu items saved successfully.'));
     }
 }

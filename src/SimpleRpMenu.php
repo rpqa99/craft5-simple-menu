@@ -21,6 +21,8 @@ use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
+use craft\services\Elements;
+use craft\events\ElementEvent;
 use craft\events\RegisterCpNavItemsEvent;
 use craft\web\twig\variables\Cp;
 use craft\services\Fields;
@@ -124,8 +126,25 @@ class SimpleRpMenu extends Plugin
         $this->setComponents([
             'simplerpmenu' => services\SimpleRpMenuService::class,
             'simplerpmenuItems' => services\SimpleRpMenuItemsService::class,
+            'dynamicMenuService' => services\DynamicMenuService::class,
         ]);
         self::$plugin = $this;
+
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                \yii\caching\TagDependency::invalidate(\Craft::$app->cache, ['simple-rp-menu']);
+            }
+        );
+
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                \yii\caching\TagDependency::invalidate(\Craft::$app->cache, ['simple-rp-menu']);
+            }
+        );
 
         // Register our site routes
         // Event::on(

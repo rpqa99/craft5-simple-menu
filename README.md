@@ -61,6 +61,20 @@ This is a simple menu to add Singles, Structures, Channels, Categories, Custom m
         
         {{ craft.simplerpmenu.getRpMenuHTML('HandleName',{ 'menu-id': 'headerMenu','menu-class':'menuGroup','ul-class':'navbar-nav justify-content-end','li-class':'nav-item','sub-menu-ul-class':'container mega-menu px-0 px-lg-_5 px-xl-1_5' }) }}
 
+### Dynamic Dropdown Menus
+
+This plugin now supports fully automated, dynamic multi-level dropdowns! Instead of manually adding every single subcategory or blog post to your menu, you can dynamically fetch them.
+
+When adding or editing a menu item, you can set the **Dropdown Type** to `Dynamic` and configure the following:
+
+*   **Dynamic Source:** 
+    *   **Structure (Subcategories only):** Automatically fetches the structural children of the selected item.
+    *   **Entries (Section):** Fetches the structural children AND the entries (like Books or Blog posts) assigned to those categories.
+*   **Max Levels to Fetch:** Control how deep the dynamic menu goes (e.g., set to `2` to fetch Categories -> Subcategories -> Books).
+*   **Dynamic Position:** Choose whether to insert the dynamically fetched items `Before`, `After`, or completely `Replace` any static children you manually added to the item.
+
+To utilize this, make sure the root item you add to the menu is an Entry or Category that has actual relations or structural children.
+
 ### Custom Field Type (Menu Selector)
 
 This plugin includes a **Simple RP Menu Selector** field type that you can add to any Field Layout in Craft CMS.

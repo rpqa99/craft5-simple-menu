@@ -9,6 +9,14 @@
  * @copyright Copyright (c) 2022 Bedh Prakash
  */
 
+window.toggleDynamicFields = function(menuItemId, value) {
+    if (value === 'dynamic') {
+        $('.dynamic-menu-options-' + menuItemId).show();
+    } else {
+        $('.dynamic-menu-options-' + menuItemId).hide();
+    }
+};
+
 $(document).ready(function() {
     $('.os-accordion').accordion({
         heightStyle: "content",
@@ -427,7 +435,13 @@ $(document).ready(function() {
                         'data-json' : menuItemDataValue,
                         'target' : $('#target-' + menuItem.id + ' :selected').val(),
                         'noLink' : $('#noLink-' + menuItem.id + ' :selected').val(),
-                        'isMegaMenu' : $('#isMegaMenu-' + menuItem.id + ' :selected').val()
+                        'isMegaMenu' : $('#isMegaMenu-' + menuItem.id + ' :selected').val(),
+                        'dropdown-type' : $('#dropdownType-' + menuItem.id + ' :selected').val(),
+                        'dynamic-source' : $('#dynamicSource-' + menuItem.id + ' :selected').val(),
+                        'max-level' : $('#maxLevel-' + menuItem.id + ' :selected').val(),
+                        'dynamic-settings': JSON.stringify({
+                            'dynamicPosition': $('#dynamicPosition-' + menuItem.id + ' :selected').val()
+                        })
                         // 'hasShortDescp' : $('#hasShortDescp-' + menuItem.id + ' :selected').val()
                     };
 

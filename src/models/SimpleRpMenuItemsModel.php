@@ -118,6 +118,11 @@ class SimpleRpMenuItemsModel extends Model
     public $noLink;
     public $customShortContent;
     public $isMegaMenu;
+    public $dropdownType = 'static';
+    public $dynamicSource;
+    public $dynamicSourceId;
+    public $maxLevel = 1;
+    public $dynamicSettings;
 
     /**
      * Returns the validation rules for attributes.
@@ -132,10 +137,12 @@ class SimpleRpMenuItemsModel extends Model
     public function rules() : array
     {
         return [
-            [['id', 'menu_id', 'parent_id', 'item_order', 'entry_id'], 'integer'],
-            [['noLink', 'customShortContent', 'isMegaMenu'], 'safe'],
-            [['name', 'custom_url', 'class', 'class_parent', 'data_json', 'target'], 'string'],
+            [['id', 'menu_id', 'parent_id', 'item_order', 'entry_id', 'dynamicSourceId', 'maxLevel'], 'integer'],
+            [['noLink', 'customShortContent', 'isMegaMenu', 'dynamicSettings'], 'safe'],
+            [['name', 'custom_url', 'class', 'class_parent', 'data_json', 'target', 'dropdownType', 'dynamicSource'], 'string'],
             [['menu_id', 'parent_id', 'item_order', 'name'], 'required'],
+            ['dropdownType', 'in', 'range' => ['static', 'dynamic']],
+            ['maxLevel', 'integer', 'min' => 1, 'max' => 5],
         ];
     }
 }

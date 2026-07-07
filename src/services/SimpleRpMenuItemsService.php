@@ -85,6 +85,11 @@ class SimpleRpMenuItemsService extends Component
         $record->noLink = $model->noLink;
         $record->customShortContent = $model->customShortContent;
         $record->isMegaMenu = $model->isMegaMenu;
+        $record->dropdownType = $model->dropdownType;
+        $record->dynamicSource = $model->dynamicSource;
+        $record->dynamicSourceId = $model->dynamicSourceId;
+        $record->maxLevel = $model->maxLevel;
+        $record->dynamicSettings = $model->dynamicSettings;
 
         $save = $record->save();
         if ( !$save ) {
@@ -139,12 +144,57 @@ class SimpleRpMenuItemsService extends Component
             $arrMenuItems[$intKey]['noLink'] = $objItem->noLink;
             $arrMenuItems[$intKey]['customShortContent'] = $objItem->customShortContent;
             $arrMenuItems[$intKey]['isMegaMenu'] = $objItem->isMegaMenu;
+            $arrMenuItems[$intKey]['dropdownType'] = $objItem->dropdownType;
+            $arrMenuItems[$intKey]['dynamicSource'] = $objItem->dynamicSource;
+            $arrMenuItems[$intKey]['dynamicSourceId'] = $objItem->dynamicSourceId;
+            $arrMenuItems[$intKey]['maxLevel'] = $objItem->maxLevel;
+            $arrMenuItems[$intKey]['dynamicSettings'] = $objItem->dynamicSettings;
         }
 
         if ($arrMenuItems) {
             return $this->sortMenuItemsByParents($arrMenuItems);
         }
         return $arrMenuItems;
+    }
+
+    public function getResolvedMenuItems($menuId) {
+        $cache = Craft::$app->getCache();
+        $cacheKey = 'simple-rp-menu-resolved-' . $menuId;
+
+        $cachedItems = $cache->get($cacheKey);
+        if ($cachedItems !== false) {
+            return $cachedItems;
+        }
+
+        $items = $this->getMenuItems($menuId);
+        
+        // Populate standard Entry/Category URLs to avoid n+1 queries in Twig
+        foreach ($items as &$item) {
+            $this->populateItemUrl($item);
+        }
+        
+        $resolvedItems = SimpleRpMenu::$plugin->dynamicMenuService->resolveDynamicItems($items);
+        
+        $cache->set($cacheKey, $resolvedItems, 86400, new \yii\caching\TagDependency(['tags' => 'simple-rp-menu']));
+
+        return $resolvedItems;
+    }
+
+    private function populateItemUrl(&$item) {
+        if (empty($item['custom_url']) && !empty($item['entry_id'])) {
+            $element = Entry::find()->id($item['entry_id'])->one();
+            if (!$element) {
+                $element = Category::find()->id($item['entry_id'])->one();
+            }
+            if ($element) {
+                $item['custom_url'] = $element->url;
+            }
+        }
+        if (isset($item['children']) && is_array($item['children'])) {
+            foreach ($item['children'] as &$child) {
+                $this->populateItemUrl($child);
+            }
+        }
     }
 
     public function getMenuItemsAdminMarkup($menuId) {
@@ -290,6 +340,62 @@ class SimpleRpMenuItemsService extends Component
                                 $localHTML .= '<select id="isMegaMenu-'.$menuItem['id'].'" class="text nicetext fullwidth isMegaMenu-menu" name="isMegaMenu">';
                                     $localHTML .= '<option value="0" '.((isset($menuItem['isMegaMenu']) && $menuItem['isMegaMenu']=='0') ? 'selected' : '') .' >No</option>';
                                     $localHTML .= '<option value="1" '.((isset($menuItem['isMegaMenu']) && $menuItem['isMegaMenu']=='1') ? 'selected' : '') .'>Yes</option>';
+                                $localHTML .= '</select>';
+                            $localHTML .= '</div>';
+                        $localHTML .= '</div>';
+
+                        $localHTML .= '<div class="row field">';
+                            $localHTML .= '<div class="heading">';
+                                $localHTML .= '<label>' . Craft::t('simple-rp-menu', 'Menu Type') . ':</label>';
+                            $localHTML .= '</div>';
+                            $localHTML .= '<div class="input">';
+                                $localHTML .= '<select id="dropdownType-'.$menuItem['id'].'" class="text nicetext fullwidth" name="dropdown-type" onchange="toggleDynamicFields('.$menuItem['id'].', this.value)">';
+                                    $dropdownType = isset($menuItem['dropdownType']) ? $menuItem['dropdownType'] : 'static';
+                                    $localHTML .= '<option value="static" '.($dropdownType == 'static' ? 'selected' : '') .'>Static (Default)</option>';
+                                    $localHTML .= '<option value="dynamic" '.($dropdownType == 'dynamic' ? 'selected' : '') .'>Dynamic</option>';
+                                $localHTML .= '</select>';
+                            $localHTML .= '</div>';
+                        $localHTML .= '</div>';
+
+                        $localHTML .= '<div class="row field dynamic-menu-options-'.$menuItem['id'].'" style="'.($dropdownType == 'dynamic' ? '' : 'display:none;').'">';
+                            $localHTML .= '<div class="heading">';
+                                $localHTML .= '<label>' . Craft::t('simple-rp-menu', 'Dynamic Source') . ':</label>';
+                            $localHTML .= '</div>';
+                            $localHTML .= '<div class="input">';
+                                $localHTML .= '<select id="dynamicSource-'.$menuItem['id'].'" class="text nicetext fullwidth" name="dynamic-source">';
+                                    $dynamicSource = isset($menuItem['dynamicSource']) ? $menuItem['dynamicSource'] : '';
+                                    $localHTML .= '<option value="entries" '.($dynamicSource == 'entries' ? 'selected' : '') .'>Entries (Section)</option>';
+                                    $localHTML .= '<option value="categories" '.($dynamicSource == 'categories' ? 'selected' : '') .'>Categories</option>';
+                                    $localHTML .= '<option value="structure" '.($dynamicSource == 'structure' ? 'selected' : '') .'>Structure</option>';
+                                $localHTML .= '</select>';
+                            $localHTML .= '</div>';
+                        $localHTML .= '</div>';
+
+                        $localHTML .= '<div class="row field dynamic-menu-options-'.$menuItem['id'].'" style="'.($dropdownType == 'dynamic' ? '' : 'display:none;').'">';
+                            $localHTML .= '<div class="heading">';
+                                $localHTML .= '<label>' . Craft::t('simple-rp-menu', 'Max Level (Depth)') . ':</label>';
+                            $localHTML .= '</div>';
+                            $localHTML .= '<div class="input">';
+                                $localHTML .= '<select id="maxLevel-'.$menuItem['id'].'" class="text nicetext fullwidth" name="max-level">';
+                                    $maxLevel = isset($menuItem['maxLevel']) ? $menuItem['maxLevel'] : 1;
+                                    for ($i = 1; $i <= 5; $i++) {
+                                        $localHTML .= '<option value="'.$i.'" '.($maxLevel == $i ? 'selected' : '') .'>'.$i.'</option>';
+                                    }
+                                $localHTML .= '</select>';
+                            $localHTML .= '</div>';
+                        $localHTML .= '</div>';
+
+                        $localHTML .= '<div class="row field dynamic-menu-options-'.$menuItem['id'].'" style="'.($dropdownType == 'dynamic' ? '' : 'display:none;').'">';
+                            $localHTML .= '<div class="heading">';
+                                $localHTML .= '<label>' . Craft::t('simple-rp-menu', 'Dynamic Position') . ':</label>';
+                            $localHTML .= '</div>';
+                            $localHTML .= '<div class="input">';
+                                $localHTML .= '<select id="dynamicPosition-'.$menuItem['id'].'" class="text nicetext fullwidth" name="dynamic-position">';
+                                    $dynamicSettings = json_decode($menuItem['dynamicSettings'] ?? '{}', true);
+                                    $dynamicPosition = $dynamicSettings['dynamicPosition'] ?? 'afterStatic';
+                                    $localHTML .= '<option value="beforeStatic" '.($dynamicPosition == 'beforeStatic' ? 'selected' : '') .'>Before Static Children</option>';
+                                    $localHTML .= '<option value="afterStatic" '.($dynamicPosition == 'afterStatic' ? 'selected' : '') .'>After Static Children</option>';
+                                    $localHTML .= '<option value="replaceStatic" '.($dynamicPosition == 'replaceStatic' ? 'selected' : '') .'>Replace Static Children</option>';
                                 $localHTML .= '</select>';
                             $localHTML .= '</div>';
                         $localHTML .= '</div>';
